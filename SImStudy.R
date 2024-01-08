@@ -1,9 +1,8 @@
-setwd("~/Library/CloudStorage/Dropbox/probit IBP/git_code")
 
+rm(list = ls())
 library(Rcpp)
 library(RcppArmadillo)
 
-rm(list = ls())
 source("rfuncts/MVPIBP_functions.R")
 source("rfuncts/gibbs_factorMVPIBP.R")
 sourceCpp("rcppfuncts/MVPIBPh_nocov.cpp")
