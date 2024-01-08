@@ -110,7 +110,8 @@ v1 = seq(1, length(all_data), by = 3)
 v2 = seq(2, length(all_data), by = 3)
 v3 = seq(3, length(all_data), by = 3)
 
-# results
+#---# results #---#
+
 c(median(MSEpi_fMVPIBP[v1]), median(MSEpi_IBP[v1]), median(MSEpi_fMVPIBP[v2]),
   median(MSEpi_IBP[v2]), median(MSEpi_fMVPIBP[v3]), median(MSEpi_IBP[v3]))
 c(summary(MSEpi_fMVPIBP[v1])[5]-summary(MSEpi_fMVPIBP[v1])[2],
@@ -192,7 +193,8 @@ for(i in 1:Nsim){
   nsigma_IMVP[i] = mean((MIBP_fit$post_mean - Sigma0)^2)
 }
 
-# results
+#---# results #---#
+
 c(median(npi_IMVP[v1]), median(npi_bMVP[v1]),
   median(npi_IMVP[v2]), median(npi_bMVP[v2]),
   median(npi_IMVP[v3]), median(npi_bMVP[v3]))
