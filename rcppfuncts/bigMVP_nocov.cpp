@@ -8,18 +8,6 @@ using namespace Rcpp;
 using namespace arma;
 
 
-
-// This is a simple example of exporting a C++ function to R. You can
-// source this function into an R session using the Rcpp::sourceCpp 
-// function (or via the Source button on the editor toolbar). Learn
-// more about Rcpp at:
-//
-//   http://www.rcpp.org/
-//   http://adv-r.had.co.nz/Rcpp.html
-//   http://gallery.rcpp.org/
-//
-
-
 double bvn0(double h, double k, double r) {
   NumericVector w;
   NumericVector x;
@@ -45,7 +33,6 @@ double bvn0(double h, double k, double r) {
   prob = prob * asr / tp + 0.25 * erfc(h/sqrt(2)) * erfc(k/sqrt(2));
   return prob;
 }
-
 
 double cox_bvn0(double a, double b, double rho){
   double l1;
@@ -93,8 +80,6 @@ arma::vec cox_bvn(arma::vec a, arma::vec b, arma::vec rhos){
   return l;
 }
 
-
-
 arma::vec vec_log_post_beta_d1_d2_h(arma::vec y, double beta, double prior_var){
   int n = y.size();
   arma::vec q = 2*y - arma::ones(n);
@@ -102,8 +87,8 @@ arma::vec vec_log_post_beta_d1_d2_h(arma::vec y, double beta, double prior_var){
   for(int i=0; i<n; ++i){
     lambda(i) = q(i)*arma::normpdf(q(i)*beta)/arma::normcdf(q(i)*beta);
   }
-  double del_log_posterior = sum(lambda); //derivative log posterior
-  double score = del_log_posterior - beta/prior_var; // first derivative, try!
+  double del_log_posterior = sum(lambda); 
+  double score = del_log_posterior - beta/prior_var; 
   
 
   double hessian=0;
@@ -117,21 +102,15 @@ arma::vec vec_log_post_beta_d1_d2_h(arma::vec y, double beta, double prior_var){
   return result;
 }
 
-
-
-
-
 arma::vec vec_log_post_beta_laplace_h(arma::vec y, double prior_var, int max_it, double epsilon){
-  
-  // change so that it returns a vector
   int n = y.size();
-  double b = 0; // you could inizialize with mu_p o 0?
+  double b = 0; 
   double H = 0;
   for(int i = 1; i<=max_it; ++i){
     arma::vec res = vec_log_post_beta_d1_d2_h(y, b, prior_var);
     double u = res(0);
     H = res(1);
-    double err = -u/H; // update of beta in NR
+    double err = -u/H; 
     if(err<epsilon){
       break;
     }
@@ -142,15 +121,13 @@ arma::vec vec_log_post_beta_laplace_h(arma::vec y, double prior_var, int max_it,
   result(0) = b;
   double H_inv = -1/H; 
   result(1) = H_inv;
-  result(arma::span(2, 2 + n-1)) = arma::ones(n) + arma::ones(n)*H_inv; //check
+  result(arma::span(2, 2 + n-1)) = arma::ones(n) + arma::ones(n)*H_inv; 
   arma::vec q = 2*y - arma::ones(n);
   arma::vec m = b/pow(arma::ones(n) + arma::ones(n)*H_inv, 0.5);
   result(arma::span(2+ n, 2+ 2*n - 1)) = q;
-  result(arma::span(2 + 2*n, 2+ 3*n - 1)) = q%m; //check
+  result(arma::span(2 + 2*n, 2+ 3*n - 1)) = q%m; 
   return result;
 }
-
-
 
 arma::mat marginal_probit_h(arma::mat Y, double prior_var, double epsilon, int max_it){
   int n = Y.n_rows;
@@ -163,18 +140,14 @@ arma::mat marginal_probit_h(arma::mat Y, double prior_var, double epsilon, int m
   return all_res;
 }
 
-
-
 double post_cor_new_h(double rho, arma::vec q1, arma::vec q2, arma::vec m1, arma::vec m2, arma::vec s1, arma::vec s2, double alpha1, double alpha2_sq){
   int n = m1.size();
   arma::vec rho_all = q1(arma::span(0,n-1))%q2(arma::span(0, n-1))%(rho*arma::ones(n))/(pow(s1, 0.5)%pow(s2, 0.5));
   arma::vec l(n);
-  l = cox_bvn(m1(arma::span(0,n-1)), m2(arma::span(0,n-1)), rho_all);   //+ lkj_marginal(rho, nu_lkj - 1 + 0.5*q, nu_lkj - 1 + 0.5*q)*arma::ones(n);
+  l = cox_bvn(m1(arma::span(0,n-1)), m2(arma::span(0,n-1)), rho_all);   
   double prior_prob = -log(1-pow(rho, 2)) + R::dnorm(0.5*log(1+rho) - 0.5*log(1-rho), alpha1, pow(alpha2_sq, 0.5), true);
-  return sum(l) + prior_prob;//+ lkj_marginal(rho, nu_lkj - 1 + 0.5*q, nu_lkj - 1 + 0.5*q);
+  return sum(l) + prior_prob;
 }
-
-
 
 List GLRcpp(int n, double a, double b){
   const arma::vec& i = arma::linspace(1, n-1, n-1);
@@ -193,10 +166,6 @@ List GLRcpp(int n, double a, double b){
     Named("w") = w);
 }
 
-
-
-
-
 List marginal_pairwise_probit_h(arma::mat params, int m, arma::mat Y, double alpha1, double alpha2_sq){
   arma::wall_clock timer;
   timer.tic();
@@ -206,7 +175,6 @@ List marginal_pairwise_probit_h(arma::mat params, int m, arma::mat Y, double alp
   arma::vec rhos = GL_res[0];
   arma::vec wts = GL_res[1];
   arma::mat beta = params(0, arma::span(0, p-1));
-  //List cov_mats = params[1];
   arma::mat S = params(arma::span(2, 2 + n-1), arma::span(0, p-1));
   arma::mat Q = params(arma::span(2+ n, 2+ 2*n-1), arma::span(0, p-1));
   arma::mat M = params(arma::span(2+ 2*n , 2 + 3*n-1), arma::span(0, p-1));
@@ -219,7 +187,6 @@ List marginal_pairwise_probit_h(arma::mat params, int m, arma::mat Y, double alp
       arma::vec d(m);
       for(int l=0; l<m; ++l){
         d(l) = post_cor_new_h(rhos(l), Q(arma::span(0,n-1),j), Q(arma::span(0,n-1),k), M(arma::span(0,n-1),j), M(arma::span(0,n-1),k), S(arma::span(0,n-1),j), S(arma::span(0,n-1),k), alpha1, alpha2_sq);
-        //Rprintf("check = %f", d(l));
       }
       arma::uvec id = find_finite(d);
       double m_const = median(d(id));
@@ -235,8 +202,6 @@ List marginal_pairwise_probit_h(arma::mat params, int m, arma::mat Y, double alp
   result["runtime"] = runtime;
   return result;
 }
-
-
 
 arma::vec two_stage_sampling(arma::mat Y,  double eta0_rho, double nu0_rho, double gamma0_rho, double lambda0_rho, int max_it, double epsilon, double nmcmc, double burnin, int m, double prior_var){
   int p = Y.n_cols;
@@ -282,8 +247,6 @@ arma::vec two_stage_sampling(arma::mat Y,  double eta0_rho, double nu0_rho, doub
 }
 
 
-
-
 // [[Rcpp::export]]
 
 List bigMVPh(arma::mat Y, double eta0_rho, double nu0_rho, double gamma0_rho, double lambda0_sq_rho, int max_it, double epsilon, int m, int nmcmc, int burnin, double prior_var, int truncP){
@@ -295,9 +258,8 @@ List bigMVPh(arma::mat Y, double eta0_rho, double nu0_rho, double gamma0_rho, do
   arma::vec emp_bayes_estimates = two_stage_sampling(Y, eta0_rho, nu0_rho, gamma0_rho, lambda0_sq_rho, max_it, epsilon, nmcmc, burnin, m, prior_var);
   double alpha1 = emp_bayes_estimates(0);
   double alpha2_sq = emp_bayes_estimates(1);
-  //Rprintf("done %d ", p);
   
-  arma::mat first_stage = marginal_probit_h(Y, prior_var, epsilon, max_it); //same as non-hierarchical
+  arma::mat first_stage = marginal_probit_h(Y, prior_var, epsilon, max_it); 
   List second_stage = marginal_pairwise_probit_h(first_stage, m, Y, alpha1, alpha2_sq);
   List result;
   result["coefficients"] = first_stage(0, arma::span(0, p-1));
