@@ -94,7 +94,6 @@ gibbs_MVPIBP = function(data, param, my_seed, N_sampl){
     sq_D = sqrt(rowSums(Lambda[[t]]^2) + 1) 
     # compute variance of beta_tilde
     inv_tmp =  inverse_SHM(Lambda[[t]], c = sq_D^2*n*btilde_sd^2 + 1)
-    # Psi =  Lambda %*% t(Lambda) + I
     Psi = eigenMapMatMult(Lambda[[t]], t(Lambda[[t]])) + diag(p) 
     inv_psi2 = eigenMapMatMult(inv_tmp, Psi)
     V_btilde = t(t(inv_psi2*(btilde_sd^2*sq_D))/sq_D) 
