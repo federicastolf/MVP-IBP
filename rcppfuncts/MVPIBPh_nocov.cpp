@@ -1,21 +1,10 @@
 #include "RcppArmadillo.h"
 #include "Rcpp.h"
-#include "RcppEigen.h"
 
-// [[Rcpp::depends(RcppArmadillo, RcppEigen)]]
-
+// [[Rcpp::depends(RcppArmadillo)]]
 
 using namespace Rcpp;
 using namespace arma;
-
-
-// [[Rcpp::export]]
-SEXP eigenMapMatMult(const Eigen::Map<Eigen::MatrixXd> A, Eigen::Map<Eigen::MatrixXd> B){
-    Eigen::MatrixXd C = A * B;
-
-    return Rcpp::wrap(C);
-}
-
 
 List GLRcpp(int n, double a, double b){
   const arma::vec& i = arma::linspace(1, n-1, n-1);
@@ -39,10 +28,6 @@ List GLRcpp(int n, double a, double b){
     Named("w") = w);
   
 }
-
-
-// it calculates the CDF of a bivariate normal distribution
-// with correlation coefficient rho for given values a and b.
 
 double cox_bvn0(double a, double b, double rho){
   double l1;
@@ -72,7 +57,6 @@ double cox_bvn0(double a, double b, double rho){
   return l1;
 }
 
-
 arma::vec cox_bvn(arma::vec a, arma::vec b, arma::vec rhos){
   int n = rhos.size();
   arma::vec l(n, arma::fill::zeros);
@@ -82,17 +66,14 @@ arma::vec cox_bvn(arma::vec a, arma::vec b, arma::vec rhos){
   return l;
 }
 
-
 double post_cor_new_h(double rho, arma::vec q1, arma::vec q2, arma::vec m1, arma::vec m2, arma::vec s1, arma::vec s2, double alpha1, double alpha2_sq){
   int n = m1.size();
   arma::vec rho_all = q1(arma::span(0,n-1))%q2(arma::span(0, n-1))%(rho*arma::ones(n))/(pow(s1, 0.5)%pow(s2, 0.5));
   arma::vec l(n);
-  l = cox_bvn(m1(arma::span(0,n-1)), m2(arma::span(0,n-1)), rho_all);   //+ lkj_marginal(rho, nu_lkj - 1 + 0.5*q, nu_lkj - 1 + 0.5*q)*arma::ones(n);
+  l = cox_bvn(m1(arma::span(0,n-1)), m2(arma::span(0,n-1)), rho_all);   
   double prior_prob = -log(1-pow(rho, 2)) + R::dnorm(0.5*log(1+rho) - 0.5*log(1-rho), alpha1, pow(alpha2_sq, 0.5), true);
-  return sum(l) + prior_prob;//+ lkj_marginal(rho, nu_lkj - 1 + 0.5*q, nu_lkj - 1 + 0.5*q);
+  return sum(l) + prior_prob;
 }
-
-
 
 List marginal_pairwise_probit_h(arma::mat params, int m, arma::mat Y, double alpha1, double alpha2_sq){
   arma::wall_clock timer;
@@ -102,8 +83,7 @@ List marginal_pairwise_probit_h(arma::mat params, int m, arma::mat Y, double alp
   List GL_res = GLRcpp(m, -1, 1);
   arma::vec rhos = GL_res[0];
   arma::vec wts = GL_res[1];
-  arma::mat beta = params(0, arma::span(0, q-1)); //beta_hat (1xq)
-  //List cov_mats = params[1];
+  arma::mat beta = params(0, arma::span(0, q-1)); 
   arma::mat S = params(arma::span(2, 2 + n-1), arma::span(0, q-1));
   arma::mat Q = params(arma::span(2+ n, 2+ 2*n-1), arma::span(0, q-1));
   arma::mat M = params(arma::span(2+ 2*n , 2 + 3*n-1), arma::span(0, q-1));
@@ -135,13 +115,13 @@ List marginal_pairwise_probit_h(arma::mat params, int m, arma::mat Y, double alp
 
 arma::vec vec_log_post_beta_d1_d2_h(arma::vec y, double beta, double prior_var, double prior_mean){
   int n = y.size();
-  arma::vec q = 2*y - arma::ones(n); //1xn
+  arma::vec q = 2*y - arma::ones(n); 
   arma::vec lambda(n, arma::fill::zeros);
   for(int i=0; i<n; ++i){
     lambda(i) = q(i)*arma::normpdf(q(i)*beta)/arma::normcdf(q(i)*beta);
   }
-  double del_log_posterior = sum(lambda); //derivative log posterior
-  double score = del_log_posterior - (beta - prior_mean)/prior_var; // first derivative, try!
+  double del_log_posterior = sum(lambda); 
+  double score = del_log_posterior - (beta - prior_mean)/prior_var; 
   
   double hessian=0;
   for(int i=0; i<n; ++i){
@@ -156,12 +136,10 @@ arma::vec vec_log_post_beta_d1_d2_h(arma::vec y, double beta, double prior_var, 
 
 
 arma::vec vec_log_post_beta_laplace_h(arma::vec y, double alpha, int p, int max_it, double epsilon){
-  
-  //new
   int n = y.size();
   double prior_var = 2*log(p);
   double prior_mean =  sqrt(1 + prior_var) * R::qnorm(alpha / (alpha + p), 0.0, 1.0, 1, 0);
-  double b = prior_mean; // you could inizialize with mu_p o 0?
+  double b = prior_mean; 
   double H = 0;
   int it_n = 0;
   for(int i = 1; i<=max_it; ++i){
@@ -169,36 +147,30 @@ arma::vec vec_log_post_beta_laplace_h(arma::vec y, double alpha, int p, int max_
     arma::vec res = vec_log_post_beta_d1_d2_h(y, b, prior_var, prior_mean);
     double u = res(0);
     H = res(1);
-    double err = -u/H; // update of beta in NR
+    double err = -u/H; 
     if(err<epsilon){
       break;
-      //Rprintf("Iteration = %d \n", i);
     }
     b = b - u/H;
-    //if(i== max_it)
-    //{
-      //Rprintf("Iteration max");
-    //}
   }
   double vec_size = 2 + 3*n +1;
   arma::vec result(vec_size);
   result(0) = b;
   double H_inv = -1/H; 
   result(1) = H_inv;
-  result(arma::span(2, 2 + n-1)) = arma::ones(n) + arma::ones(n)*H_inv; //check
+  result(arma::span(2, 2 + n-1)) = arma::ones(n) + arma::ones(n)*H_inv; 
   arma::vec q = 2*y - arma::ones(n);
   arma::vec m = b/pow(arma::ones(n) + arma::ones(n)*H_inv, 0.5);
   result(arma::span(2+ n, 2+ 2*n - 1)) = q;
-  result(arma::span(2 + 2*n, 2+ 3*n - 1)) = q%m; //check
+  result(arma::span(2 + 2*n, 2+ 3*n - 1)) = q%m; 
   result(2+ 3*n)=it_n;
   return result;
-  // puoi ritornarti il num di it
 }
 
 arma::mat marginal_probit(arma::mat Y, double alpha, double epsilon, int max_it){
   int n = Y.n_rows;
   int p = Y.n_cols;
-  double vec_size = 2 + 3*n +1; // +3n is elements useful for second stage
+  double vec_size = 2 + 3*n +1; 
   arma::mat all_res(vec_size, p);
 
   for(int j=0; j<p; ++j){
@@ -206,7 +178,6 @@ arma::mat marginal_probit(arma::mat Y, double alpha, double epsilon, int max_it)
   }
   return all_res;
 }
-
 
 // log lik for alpha for MH
 double log_lik_alpha(double alpha, arma::vec beta){
@@ -232,8 +203,8 @@ double logpost_alpha(double alpha, arma::vec beta, double a_alpha, double b_alph
 
 arma::vec two_stage_sampling(arma::mat Y, double eta0_rho, double nu0_rho, double gamma0_rho, double lambda0_rho, double a_alpha, double b_alpha, int max_it, double epsilon, double nmcmc, double burnin, int m, double eps_MH){
   int p = Y.n_cols; 
-  arma::vec eta_rho_samples((nmcmc - burnin)); //don't understand
-  arma::vec omega_sq_rho_samples((nmcmc - burnin)); // you need that!
+  arma::vec eta_rho_samples((nmcmc - burnin)); 
+  arma::vec omega_sq_rho_samples((nmcmc - burnin)); 
   arma::vec alpha_beta_samples((nmcmc - burnin));
   double eta_rho = 0;
   double omega_sq_rho = 1;
@@ -241,7 +212,6 @@ arma::vec two_stage_sampling(arma::mat Y, double eta0_rho, double nu0_rho, doubl
   double alpha_beta = arma::randg(1)(0);
 
  for(int ii =1; ii<=nmcmc; ++ii){
-    
     //first stage
     arma::mat beta_res = marginal_probit(Y, alpha_beta, epsilon, max_it);
     arma::vec beta_mean = beta_res.row(0).t();
@@ -249,7 +219,6 @@ arma::vec two_stage_sampling(arma::mat Y, double eta0_rho, double nu0_rho, doubl
     arma::vec epsilon = arma::randn<arma::vec>(p);
     arma::vec b_samples = beta_mean + var_beta % epsilon;
     // from b_samples sample alpha trhough a metropolis
-
     // MH step
     double logp = logpost_alpha(alpha_beta, b_samples, a_alpha, b_alpha);
     double alpha_beta_new = arma::randn() * eps_MH + alpha_beta;
@@ -273,30 +242,18 @@ arma::vec two_stage_sampling(arma::mat Y, double eta0_rho, double nu0_rho, doubl
     arma::uvec id = arma::find_finite(gamma_samp);
     double gamma_mean = arma::mean(gamma_samp(id));
     int q_l = id.n_elem;
-
-    // sample omega^2 from a in inverse gamma (7)
     double nu_rho_q = nu0_rho + 0.5*q_l*(q_l-1);
-    double gamma_rho_q = gamma0_rho + 0.25*q_l*(q_l-1); // WHY 0.25?
+    double gamma_rho_q = gamma0_rho + 0.25*q_l*(q_l-1); 
     double gamma_sq_sum = (0.5*q_l*(q_l-1) - 1)*arma::var(gamma_samp(id));
-    // I don't understand this parameter
     double gamma_post_var = lambda0_rho + 0.5*gamma_sq_sum + (nu0_rho*0.5*q_l*(q_l-1)/(0.5*nu0_rho+ 0.5*q_l*(q_l-1)))*pow(eta0_rho - gamma_mean,2);
     double omega_sq_rho = 1/arma::randg<double>(distr_param(gamma_rho_q, 1/gamma_post_var));
-    
-    // WHAT's that?
     double eta_rho = (nu0_rho*eta0_rho + 0.5*q_l*(q_l-1)*gamma_mean)/(nu0_rho+ 0.5*q_l*(q_l-1)) + (pow(omega_sq_rho, 0.5)/nu_rho_q)*arma::randn();
-    //Rprintf("eta_rho = %f \n", eta_rho);
     if(ii> burnin)
     {
       eta_rho_samples(ii - burnin -1) = eta_rho;
       omega_sq_rho_samples(ii - burnin - 1) = omega_sq_rho;
       alpha_beta_samples(ii - burnin -1) = alpha_beta;
     }
-    
-    //if(ii%20 == 0)
-    //{
-    //  Rprintf("Iteration = %d \n", ii);
-    //}
-
  }
   double alpha_hat = mean(alpha_beta_samples);
   double eta_rho_hat = mean(eta_rho_samples);
