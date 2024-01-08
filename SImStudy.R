@@ -106,9 +106,6 @@ for(i in 1:length(all_data)){
   cat("simulation ",i,"out of",length(all_data),"\n")
 }
 
-# save(all_data, MSEps_IBP, MSEps_fMVPIBP, MSEpi_fMVPIBP, MSEpi_IBP,
-#      file="MSE_simg.Rdata")
-
 v1 = seq(1, length(all_data), by = 3)
 v2 = seq(2, length(all_data), by = 3)
 v3 = seq(3, length(all_data), by = 3)
@@ -161,8 +158,7 @@ for(i in 1:length(all_data)){
   
   cat("simulation ",i,"out of",length(all_data),"\n")
 }
-save(bigM, MIBP, all_data, file="simcomp_factor_ts.Rdata")
-# save(bigM, MIBP, all_data, file="simcomp_block.Rdata")
+
 
 ##---------------## compute errors ##---------------------##
 
