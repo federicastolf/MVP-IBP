@@ -1,6 +1,6 @@
 require(Matrix)
 
-######################## function GIBBS MVP-IBP ########################
+######################## functions GIBBS MVP-IBP #######################
 ########################################################################
 
 inverse_SHM = function(M, c = 1){
@@ -55,7 +55,7 @@ logpost_alpha = function(alpha, beta, a_alpha, b_alpha){
 
 synthetic_data = function(n, p, alpha, my_seed, type, k_factor = 10){
   "----------------------------------------------------------------------------
-  simulate binary datta matrix in different scenario: 
+  simulate binary datta matrix in different scenarios: 
   - factor (MVP-IBP factor model)
   - block (MVP-IBP where Sigma has a block-structure)
   - ts (MVP-IBP where the latent variables follow a t-student distribution)
