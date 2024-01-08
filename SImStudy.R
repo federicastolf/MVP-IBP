@@ -120,10 +120,17 @@ c(summary(MSEpi_fMVPIBP[v1])[5]-summary(MSEpi_fMVPIBP[v1])[2],
   summary(MSEpi_fMVPIBP[v3])[5]-summary(MSEpi_fMVPIBP[v3])[2],
   summary(MSEpi_IBP[v3])[5]-summary(MSEpi_IBP[v3])[2])
 
+c(median(MSEps_fMVPIBP[v1]), median(MSEps_IBP[v1]), median(MSEps_fMVPIBP[v2]),
+  median(MSEps_IBP[v2]), median(MSEps_fMVPIBP[v3]), median(MSEps_IBP[v3]))
+c(summary(MSEps_fMVPIBP[v1])[5]-summary(MSEps_fMVPIBP[v1])[2],
+  summary(MSEps_IBP[v1])[5]-summary(MSEps_IBP[v1])[2],
+  summary(MSEps_fMVPIBP[v2])[5]-summary(MSEps_fMVPIBP[v2])[2],
+  summary(MSEps_IBP[v2])[5]-summary(MSEps_IBP[v2])[2],
+  summary(MSEps_fMVPIBP[v3])[5]-summary(MSEps_fMVPIBP[v3])[2],
+  summary(MSEps_IBP[v3])[5]-summary(MSEps_IBP[v3])[2])
 
 ### ------------- ### Two-stage alghoritm type simulations ###--------------####
 ###############################################################################
-
 
 ##--------------------## parameters ##---------------------##
 max_it = 100
@@ -159,7 +166,6 @@ for(i in 1:length(all_data)){
   cat("simulation ",i,"out of",length(all_data),"\n")
 }
 
-
 ##---------------## compute errors ##---------------------##
 
 Nsim = length(all_data)
@@ -190,7 +196,6 @@ for(i in 1:Nsim){
 c(median(npi_IMVP[v1]), median(npi_bMVP[v1]),
   median(npi_IMVP[v2]), median(npi_bMVP[v2]),
   median(npi_IMVP[v3]), median(npi_bMVP[v3]))
-
 c(summary(npi_IMVP[v1])[5] - summary(npi_IMVP[v1])[2],
   summary(npi_bMVP[v1])[5] - summary(npi_bMVP[v1])[2],
   summary(npi_IMVP[v2])[5] - summary(npi_IMVP[v2])[2],
@@ -201,12 +206,9 @@ c(summary(npi_IMVP[v1])[5] - summary(npi_IMVP[v1])[2],
 c(median(nsigma_IMVP[v1]), median(nsigma_bMVP[v1]),
   median(nsigma_IMVP[v2]), median(nsigma_bMVP[v2]),
   median(nsigma_IMVP[v3]), median(nsigma_bMVP[v3]))
-
-
 c(summary(nsigma_IMVP[v1])[5] - summary(nsigma_IMVP[v1])[2],
   summary(nsigma_bMVP[v1])[5] - summary(nsigma_bMVP[v1])[2],
   summary(nsigma_IMVP[v2])[5] - summary(nsigma_IMVP[v2])[2],
   summary(nsigma_bMVP[v2])[5] - summary(nsigma_IMVP[v2])[2],
   summary(nsigma_IMVP[v3])[5] - summary(nsigma_IMVP[v3])[2],
   summary(nsigma_bMVP[v3])[5] - summary(nsigma_bMVP[v3])[2])
-
