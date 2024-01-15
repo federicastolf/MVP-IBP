@@ -110,20 +110,20 @@ gibbs_MVPIBP = function(data, param, my_seed, N_sampl){
     beta[,t] = beta_tilde[,t]/sq_D
     
     #---# 5) update alpha through MH step #---#
-    #logp = logpost_alpha(alpha_MH, beta_tilde[,t], param$a_alpha, param$b_alpha)
-     logp = logpost_alpha_log(alpha_MH, beta_tilde[,t], param$a_alpha, param$b_alpha)
+    logp = logpost_alpha(alpha_MH, beta_tilde[,t], param$a_alpha, param$b_alpha)
+    #logp = logpost_alpha_log(alpha_MH, beta_tilde[,t], param$a_alpha, param$b_alpha)
     alpha_MH_new = rnorm(1, alpha_MH, param$eps_MH)
-    # logp_new = logpost_alpha(alpha_MH_new, beta_tilde[,t],
-    #                          param$a_alpha, param$b_alpha)
-    logp_new = logpost_alpha_log(alpha_MH_new, beta_tilde[,t],
+    logp_new = logpost_alpha(alpha_MH_new, beta_tilde[,t],
                              param$a_alpha, param$b_alpha)
+    # logp_new = logpost_alpha_log(alpha_MH_new, beta_tilde[,t],
+    #                          param$a_alpha, param$b_alpha)
     a_acc = min(1, exp(logp_new - logp))
     if (runif(1) < a_acc){
       logp = logp_new
       alpha_MH = alpha_MH_new
     }
-    #alpha[t] = alpha_MH
-    alpha[t] = exp(alpha_MH)
+    alpha[t] = alpha_MH
+    #alpha[t] = exp(alpha_MH)
     
     # mean for beta_tilde prior
     mu_btilde = sqrt(1 + btilde_sd^2)*qnorm(alpha[t]/(alpha[t] + p)) 
