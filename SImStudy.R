@@ -201,7 +201,7 @@ c(median(npi_IMVP[v1]), median(npi_bMVP[v1]),
 c(summary(npi_IMVP[v1])[5] - summary(npi_IMVP[v1])[2],
   summary(npi_bMVP[v1])[5] - summary(npi_bMVP[v1])[2],
   summary(npi_IMVP[v2])[5] - summary(npi_IMVP[v2])[2],
-  summary(npi_bMVP[v2])[5] - summary(npi_IMVP[v2])[2],
+  summary(npi_bMVP[v2])[5] - summary(npi_bMVP[v2])[2],
   summary(npi_IMVP[v3])[5] - summary(npi_IMVP[v3])[2],
   summary(npi_bMVP[v3])[5] - summary(npi_bMVP[v3])[2])
 
@@ -211,6 +211,6 @@ c(median(nsigma_IMVP[v1]), median(nsigma_bMVP[v1]),
 c(summary(nsigma_IMVP[v1])[5] - summary(nsigma_IMVP[v1])[2],
   summary(nsigma_bMVP[v1])[5] - summary(nsigma_bMVP[v1])[2],
   summary(nsigma_IMVP[v2])[5] - summary(nsigma_IMVP[v2])[2],
-  summary(nsigma_bMVP[v2])[5] - summary(nsigma_IMVP[v2])[2],
+  summary(nsigma_bMVP[v2])[5] - summary(nsigma_bMVP[v2])[2],
   summary(nsigma_IMVP[v3])[5] - summary(nsigma_IMVP[v3])[2],
   summary(nsigma_bMVP[v3])[5] - summary(nsigma_bMVP[v3])[2])
