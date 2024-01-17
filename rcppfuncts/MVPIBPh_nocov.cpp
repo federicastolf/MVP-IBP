@@ -266,6 +266,7 @@ arma::vec two_stage_sampling(arma::mat Y, double eta0_rho, double nu0_rho, doubl
 // [[Rcpp::export]]
 
 List MVP_IBPh(arma::mat Y, double eta0_rho, double nu0_rho, double gamma0_rho, double lambda0_sq_rho, double a_alpha, double b_alpha, int max_it, double epsilon, int m, int nmcmc, int burnin, double eps_MH, int truncP){
+  arma::mat data = Y;
   int n = Y.n_rows;
   Y = arma::join_rows(Y, arma::zeros<arma::mat>(n, truncP));
   int p = Y.n_cols;
@@ -287,5 +288,6 @@ List MVP_IBPh(arma::mat Y, double eta0_rho, double nu0_rho, double gamma0_rho, d
   result["post_var"] = second_stage[1];
   double runtime = timer.toc();
   result["runtime"] = runtime;
+  result["Y"] = data;
   return result;
 }
