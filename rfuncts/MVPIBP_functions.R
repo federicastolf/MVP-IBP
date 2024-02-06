@@ -66,10 +66,11 @@ synthetic_data = function(n, p, alpha, my_seed, type, k_factor = 10){
   beta = rnorm(p, b_mu, b_sd)
   data_MVPIBP = matrix(0, nrow = n, ncol = p)
   z = rep(NA, p)
+  Lambda = matrix(rnorm(p*k_factor, mean = 1), p, k_factor)
   
   # factor 
   if(type=="factor"){
-    Lambda = matrix(rnorm(p*k_factor), p, k_factor)
+    # Lambda = matrix(rnorm(p*k_factor, sd=2), p, k_factor)
     beta_tilde = beta*sqrt(rowSums(Lambda^2) +1)
     for (i in 1:n){
       eps = rnorm(p)
@@ -82,26 +83,21 @@ synthetic_data = function(n, p, alpha, my_seed, type, k_factor = 10){
     beta = beta_tilde
   }
 
-  #block
-  if(type=="block"){
-    nblock = p/10
-    listM = vector("list", nblock)
-    for(k in 1:nblock){
-      L = matrix(rnorm(10*10),10,10)
-      listM[[k]] = L %*% t(L)
-    }
-    covm = as.matrix(Matrix::bdiag(listM))
-    sq_D = sqrt(diag(covm))
-    Sigma = diag(1/sq_D) %*% covm %*% diag(1/sq_D)
-    for(i in 1:n){
+  #common
+  if(type=="common"){
+  rhot = runif(1, 0, 0.8)
+  Sigma = matrix(rhot, p, p)
+  diag(Sigma) = 1
+  for(i in 1:n){
       eps = mvnfast::rmvn(1, mu=rep(0,p), sigma = Sigma)
       z = beta + eps
       data_MVPIBP[i,] = as.numeric(z>0)
     }
   }
+  
   # t-student
   if(type=="ts"){
-    Lambda = matrix(rnorm(p*k_factor), p, k_factor)
+    # Lambda = matrix(rnorm(p*k_factor), p, k_factor)
     beta_tilde = beta*sqrt(rowSums(Lambda^2) +1)
     for (i in 1:n){
       eps = rt(p, df = 10)

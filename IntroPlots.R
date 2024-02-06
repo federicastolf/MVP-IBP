@@ -14,11 +14,9 @@ pl1 = ggplot(fungi_prevalence) +
   geom_histogram(aes(x = Prevalence), binwidth = 0.02) + 
   xlab("Mean prevalence") + 
   ylab("Count") + 
-  theme_bw()+
-  theme(axis.title.x = element_text(size = sz_t), 
-        axis.text.x = element_text(size = sz_t),
-        axis.title.y = element_text(size = sz_t), 
-        axis.text.y = element_text(size = sz_t))
+  theme_light()+
+  theme(axis.title.x = element_text(size = 22),axis.text.x = element_text(size = 22),
+        axis.title.y = element_text(size = 22), axis.text.y = element_text(size = 22))
 pl1
 
 ####---------------------###### common species ####--------------------######
@@ -48,10 +46,14 @@ fcn = ggplot(dataC_long, aes(x = Demp, y = value)) +
   
   ylab("Common features") +
   xlab(TeX("$\\Delta$")) +
-  theme_minimal() +
-  theme(legend.position = c(0.7, 0.6), axis.title.y = element_text(size=22),
-        axis.title.x = element_text(size=24), legend.text = element_text(size=23),
+  theme_light() +
+  theme(legend.position = "top", axis.title.y = element_text(size=21),
+        axis.title.x = element_text(size=24), legend.text = element_text(size=20),
         axis.text.x = element_text(size=18), axis.text.y = element_text(size=18),
-        legend.title=element_blank())
+        legend.title=element_blank(),  legend.box.spacing = unit(0.2,"line"),
+        strip.text = element_text(size = 10, colour = "black"),
+        strip.background = element_rect(fill = "gray82"),
+        panel.grid.major = element_line(size = 0.3, colour = "gray93"),
+        panel.grid.minor = element_line(size = 0.15, colour = "gray93"))
 fcn
 
