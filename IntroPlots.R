@@ -18,6 +18,8 @@ pl1 = ggplot(fungi_prevalence) +
   theme(axis.title.x = element_text(size = 22),axis.text.x = element_text(size = 22),
         axis.title.y = element_text(size = 22), axis.text.y = element_text(size = 22))
 pl1
+# ggsave("fungi_prev.png", plot = pl1, scale = 1, width = 8, height = 6, units = "in",
+#        dpi = 300, limitsize = TRUE)
 
 ####---------------------###### common species ####--------------------######
 
@@ -45,7 +47,7 @@ fcn = ggplot(dataC_long, aes(x = Demp, y = value)) +
                      labels = c("empirical","IBP", "MVP-IBP")) +
   
   ylab("Common features") +
-  xlab(TeX("$\\Delta$")) +
+  xlab(TeX("$\\epsilon$")) +
   theme_light() +
   theme(legend.position = "top", axis.title.y = element_text(size=21),
         axis.title.x = element_text(size=24), legend.text = element_text(size=20),
@@ -57,3 +59,5 @@ fcn = ggplot(dataC_long, aes(x = Demp, y = value)) +
         panel.grid.minor = element_line(size = 0.15, colour = "gray93"))
 fcn
 
+
+#ggsave(filename = "common_emp.png", plot=fcn,  width = 9, height = 5.5)
