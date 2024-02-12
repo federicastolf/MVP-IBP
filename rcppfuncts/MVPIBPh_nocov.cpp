@@ -218,7 +218,6 @@ arma::vec two_stage_sampling(arma::mat Y, double eta0_rho, double nu0_rho, doubl
     arma::vec var_beta = beta_res.row(1).t();
     arma::vec epsilon = arma::randn<arma::vec>(p);
     arma::vec b_samples = beta_mean + var_beta % epsilon;
-    // from b_samples sample alpha trhough a metropolis
     // MH step
     double logp = logpost_alpha(alpha_beta, b_samples, a_alpha, b_alpha);
     double alpha_beta_new = arma::randn() * eps_MH + alpha_beta;
@@ -237,7 +236,6 @@ arma::vec two_stage_sampling(arma::mat Y, double eta0_rho, double nu0_rho, doubl
     arma::vec rho1 = rho_mean(alt_lower_indices);
     arma::vec rho2 = rho_var(alt_lower_indices);
     arma::vec rho_samp = rho1 + pow(rho2, 0.5)%randn(0.5*p*(p-1));
-    // set gamma_jk
     arma::vec gamma_samp = 0.5*log(rho_samp+arma::ones(0.5*p*(p-1))) - 0.5*log(arma::ones(0.5*p*(p-1))-rho_samp);
     arma::uvec id = arma::find_finite(gamma_samp);
     double gamma_mean = arma::mean(gamma_samp(id));
