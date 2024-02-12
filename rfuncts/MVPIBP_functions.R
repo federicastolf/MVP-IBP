@@ -141,7 +141,7 @@ simulation_data = function(alpha, n, p, type, my_seed){
 ###########################################################################
 
 
-Beta_Binom_IBP = function(data, param, Niter, burnin, my_seed){
+Beta_Binom_IBP = function(data, param, Niter, my_seed){
   "----------------------------------------------------------------------------
   Gibbs for truncated Beta-Binomial rapresentation of the IBP
   ----------------------------------------------------------------------------"
@@ -165,7 +165,5 @@ Beta_Binom_IBP = function(data, param, Niter, burnin, my_seed){
     alpha[iter] = rgamma(1, param$a_alpha, param$b_alpha - sum(PROB[iter])/p)
   }
   expP = exp(PROB)
-  alpha = alpha[(burnin+1):Niter]
-  expP = expP[,(burnin+1):Niter]
   return(list("prob" = expP, "alpha" = alpha))
 }
