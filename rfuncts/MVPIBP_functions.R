@@ -55,9 +55,9 @@ logpost_alpha = function(alpha, beta, a_alpha, b_alpha){
 
 synthetic_data = function(n, p, alpha, my_seed, type, k_factor = 10){
   "----------------------------------------------------------------------------
-  simulate binary datta matrix in different scenarios: 
+  simulate binary data matrix in different scenarios: 
   - factor (MVP-IBP factor model)
-  - block (MVP-IBP where Sigma has a block-structure)
+  - common (MVP-IBP where Sigma has an equi-correlation structure)
   - ts (MVP-IBP where the latent variables follow a t-student distribution)
   ----------------------------------------------------------------------------"
   set.seed(my_seed)
@@ -66,11 +66,11 @@ synthetic_data = function(n, p, alpha, my_seed, type, k_factor = 10){
   beta = rnorm(p, b_mu, b_sd)
   data_MVPIBP = matrix(0, nrow = n, ncol = p)
   z = rep(NA, p)
-  Lambda = matrix(rnorm(p*k_factor, mean = 1), p, k_factor)
+
   
   # factor 
   if(type=="factor"){
-    # Lambda = matrix(rnorm(p*k_factor, sd=2), p, k_factor)
+    Lambda = matrix(rnorm(p*k_factor, mean = 1), p, k_factor)
     beta_tilde = beta*sqrt(rowSums(Lambda^2) +1)
     for (i in 1:n){
       eps = rnorm(p)
@@ -85,10 +85,10 @@ synthetic_data = function(n, p, alpha, my_seed, type, k_factor = 10){
 
   #common
   if(type=="common"){
-  rhot = runif(1, 0, 0.8)
-  Sigma = matrix(rhot, p, p)
-  diag(Sigma) = 1
-  for(i in 1:n){
+    rhot = runif(1, 0, 0.8)
+    Sigma = matrix(rhot, p, p)
+    diag(Sigma) = 1
+    for(i in 1:n){
       eps = mvnfast::rmvn(1, mu=rep(0,p), sigma = Sigma)
       z = beta + eps
       data_MVPIBP[i,] = as.numeric(z>0)
@@ -97,7 +97,7 @@ synthetic_data = function(n, p, alpha, my_seed, type, k_factor = 10){
   
   # t-student
   if(type=="ts"){
-    # Lambda = matrix(rnorm(p*k_factor), p, k_factor)
+    Lambda = matrix(rnorm(p*k_factor), p, k_factor)
     beta_tilde = beta*sqrt(rowSums(Lambda^2) +1)
     for (i in 1:n){
       eps = rt(p, df = 10)
