@@ -38,19 +38,19 @@ for(i in 1:length(all_data)){
   d1 = all_data[[i]]$data_all
   
   # MVP-IBP factor model
-  param_MVPIBP = list(truncP = truncP, # truncation level for MVP-IBP
+  param_MVPIBP = list(truncP = truncP,
                       # parameter of gamma prior for alpha
                       a_alpha = mean(rowSums(d1)), b_alpha = 1, 
                       eps_MH = 2.5, # epsilon for MH step
-                      gamma = 10, # put the expected number of factors
+                      gamma = 10,
                       # CUSP parameters
                       a_theta = 2, b_theta = 1.5, theta_inf = 0.05, 
-                      # adaptation
+                      # adaptation CUSP
                       start_adapt = 500, Kmax = p, a0_ad = -1, a1_ad = -5*10^(-4))
   fit_gibbs = gibbs_MVPIBP(d1, param_MVPIBP, seeds_g[i], Niter)
   
   # IBP
-  param_IBP = list(truncP = truncP, # set P for MVP-IBP
+  param_IBP = list(truncP = truncP, 
                    # parameter of gamma prior for alpha
                    a_alpha = mean(rowSums(d1)), b_alpha = 1)
   fit_IBP = Beta_Binom_IBP(d1, param_IBP, Niter, seeds_g[i])
@@ -83,10 +83,10 @@ for(i in 1:length(all_data)){
   MSEpstar_IBP1 = MSEpstar_MI = rep(0, Niter-burnin)
   pst_exp = sum(1-(1-pi_0)^n)
   for(s in 1:(Niter-burnin)){
-    # MSE for pi IBPP
+    # MSE for MVP-IBP
     pstar_MVP = sum(1-(1-pnorm(fit_gibbs$beta_tilde[,burnin+s]))^n)
     MSEpstar_MI[s] = (pstar_MVP - pst_exp)^2
-    # MSE for pi MVP-IBP
+    # MSE for IBP
     pstar_IBP = sum(1-(1-fit_IBP$prob[,burnin+s])^n)
     MSEpstar_IBP1[s] = (pstar_IBP - pst_exp)^2
   }
@@ -207,7 +207,6 @@ gibbsMSE
 Fplot = ggplot(Fdata, aes(x = scenario, y = F1, fill = model))+
   geom_boxplot(alpha=0.7) +
   scale_fill_manual(values = c("forestgreen", "red")) +
-  #scale_color_manual(values=c("darkred","steelblue"), labels = c("MVP-IBP", "IBP"))
   facet_wrap(~ type, scales = "free", labeller = as_labeller(nl, default = label_parsed)) +
   xlab("") +
   ylab("Frobenius error")+
