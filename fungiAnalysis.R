@@ -32,7 +32,6 @@ lambda0_sq_rho = 0.01 # b_omega
 truncP = 200
 set.seed(434)
 
-# fungi = fungi[,1:50]
 #---------# fit hierarchical  MVP-IBP for fungi data #--------#
 fit_MVPIBP = MVP_IBPh(fungi, X_fungi,eta0_rho, nu0_rho, gamma0_rho, lambda0_sq_rho, 
                       a_alpha, b_alpha,prior_var,max_it, epsilon, m, nmcmc, burnin, 
@@ -53,7 +52,7 @@ covariate_fungi = df1 %>%
 colnames(covariate_fungi)[2] = "site"
 covariate_fungi$site = as.factor(covariate_fungi$site)
 
-# matrix with taxonomical tree
+# matrix with taxonomic tree
 tax_matAB = tree_fungi %>% filter(Phylum %in% c("Ascomycota","Basidiomycota"))
 tax_matAB = as.matrix(tax_matAB)
 
