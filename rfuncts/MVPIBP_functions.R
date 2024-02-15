@@ -1,4 +1,5 @@
 require(Matrix)
+require(mvnfast)
 
 ######################## functions GIBBS MVP-IBP #######################
 ########################################################################
@@ -209,4 +210,60 @@ build_phylo = function(covariate, fit_MVPIBP, tax_matrix, Xmodel){
   TAX = tax_table(tax_matrix)
   fungi_phylo = phyloseq(OTU, TAX, samples)
   return(fungi_phylo)
+}
+
+
+compute_pstar = function(data){
+  # compute pstar for all rows of data
+  n = nrow(data)
+  pstar = rep(0, n)
+  pstar[1] = sum(data[1,])
+  for(i in 2:n){
+    datai = data[c(1:i),]
+    pstar[i] = sum(apply(datai != 0, 2, any))
+  }
+  pstar
+}
+
+
+pred_pstarMVP = function(fit_MVPIBP, Nrep, seed, covariate, Y){
+  nf = nrow(covariate)
+  X = as.matrix(covariate)
+  p = ncol(Y)
+  beta_est = fit_MVPIBP$coefficients[,1:p]
+  q = nrow(beta_est)
+  pstar_out = matrix(0, Nrep, nf)
+  set.seed(seed)
+  for(n in 1:Nrep){
+    beta_sample = matrix(NA, q, NCOL(beta_est))
+    for(j in 1:NCOL(beta_est)){
+      sigma_est = matrix(fit_MVPIBP$cov_mats[,j], q, q)
+      muj = beta_est[,j]
+      beta_sample[,j] = mvnfast::rmvn(1, muj, sigma_est)
+    }
+    pi_hat = pnorm(X %*% beta_sample)
+    pi_mean = apply(pi_hat,2,mean)
+    datasim1 = matrix(0, nrow(pi_hat), length(pi_mean))
+    for(i in 1:nrow(pi_hat)){
+      datasim1[i,]=rbinom(length(pi_mean), 1, pi_mean)
+    }
+    pstar_out[n,] = compute_pstar(datasim1)
+  }
+  pstar_out
+}
+
+
+pred_pstarIBP = function(IBP_fit, Nrep, seed, burnin, MCMC, data){
+  set.seed(seed)
+  p = ncol(data)
+  pi_hat = apply(IBP_fit[[1]][,burnin:MCMC],1,mean)[1:p]
+  pstar_IBP = matrix(0, Nrep, nrow(data))
+  for(n in 1:Nrep){
+    datasim1 = matrix(0,nrow(data), length(pi_hat))
+    for(i in 1:nrow(data)){
+      datasim1[i,]=rbinom(length(pi_hat),1,pi_hat)
+    }
+    pstar_IBP[n,] = compute_pstar(datasim1)
+  }
+  pstar_IBP
 }
