@@ -62,3 +62,4 @@ phylo_fungiAB = build_phylo(covariate_fungi, fit_MVPIBP, tax_matAB, X_fungi)
 # type "no_cov" instead of "site" for the taxonomic composition in all samples
 plot_krona(phylo_fungiAB, "fungiAB", "site", trim=T)
 
+

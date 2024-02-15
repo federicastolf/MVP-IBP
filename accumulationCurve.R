@@ -16,7 +16,7 @@ load("data/fungi_binary.Rdata")
 cov_data = as.data.frame(X_fungi)
 Nrep = 50
 
-#--------# observed pstar #---------#
+#--------# observed p^*_n #---------#
 
 ## site 1 and 2
 fungi1 = fungi[cov_data$site_id1 == 1,]
