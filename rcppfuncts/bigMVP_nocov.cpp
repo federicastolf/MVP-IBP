@@ -111,6 +111,7 @@ arma::vec vec_log_post_beta_laplace_h(arma::vec y, double prior_var, int max_it,
     double u = res(0);
     H = res(1);
     double err = -u/H; 
+    err = pow(err,2);
     if(err<epsilon){
       break;
     }
