@@ -141,7 +141,6 @@ arma::vec vec_log_post_beta_laplace_h(arma::vec y, double alpha, int p, int max_
   double prior_mean =  sqrt(1 + prior_var) * R::qnorm(alpha / (alpha + p), 0.0, 1.0, 1, 0);
   double b = prior_mean; 
   double H = 0;
-  int it_n = 0;
   for(int i = 1; i<=max_it; ++i){
     it_n=i;
     arma::vec res = vec_log_post_beta_d1_d2_h(y, b, prior_var, prior_mean);
@@ -153,7 +152,7 @@ arma::vec vec_log_post_beta_laplace_h(arma::vec y, double alpha, int p, int max_
     }
     b = b - u/H;
   }
-  double vec_size = 2 + 3*n +1;
+  double vec_size = 2 + 3*n;
   arma::vec result(vec_size);
   result(0) = b;
   double H_inv = -1/H; 
@@ -163,7 +162,6 @@ arma::vec vec_log_post_beta_laplace_h(arma::vec y, double alpha, int p, int max_
   arma::vec m = b/pow(arma::ones(n) + arma::ones(n)*H_inv, 0.5);
   result(arma::span(2+ n, 2+ 2*n - 1)) = q;
   result(arma::span(2 + 2*n, 2+ 3*n - 1)) = q%m; 
-  result(2+ 3*n)=it_n;
   return result;
 }
 
