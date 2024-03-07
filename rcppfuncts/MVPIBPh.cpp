@@ -86,7 +86,6 @@ arma::vec vec_log_post_beta_laplace(arma::vec y, arma::mat X, arma::vec mean_b, 
   int n = y.size();
   int q = X.n_cols;
   arma::vec b(q, arma::fill::zeros);
-  b(0) = 0;
   arma::mat H(q, q, arma::fill::zeros);
   for(int i = 1; i<=max_it; ++i){
     arma::mat res = vec_log_post_beta_d1_d2(y, X, b, mean_b, inv_covb);
