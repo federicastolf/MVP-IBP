@@ -30,7 +30,6 @@ nu0_rho = 0.01
 gamma0_rho = 0.01 # a_omega
 lambda0_sq_rho = 0.01 # b_omega
 truncP = 200
-set.seed(434)
 
 #---------# fit hierarchical  MVP-IBP for fungi data #--------#
 fit_MVPIBP = MVP_IBPh(fungi, X_fungi,eta0_rho, nu0_rho, gamma0_rho, lambda0_sq_rho, 
