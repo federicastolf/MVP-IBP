@@ -29,7 +29,6 @@ pstar2_obs = compute_pstar(fungi2)
 
 #---------------# test and train set #-------------------#
 
-set.seed(854)
 # site 1
 Nobs_test1 = round(nf1*0.25)
 sampled_rows1 = sample(nf1, Nobs_test1)
