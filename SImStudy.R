@@ -14,7 +14,7 @@ n = 80 # number of samples
 alpha_data =seq(2, 40, by = 2)
 p = 300
 type = c("factor", "ts", "common")
-all_data = simulation_data(alpha_data, n, p, type, my_seed)
+all_data = simulation_data(alpha_data, n, p, type)
 
 ###### ------------- ###### Gibbs type simulations ######----------------######
 ###############################################################################
