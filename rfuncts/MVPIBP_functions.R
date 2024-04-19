@@ -225,14 +225,13 @@ compute_pstar = function(data){
 }
 
 
-pred_pstarMVP = function(fit_MVPIBP, Nrep, seed, covariate, Y){
+pred_pstarMVP = function(fit_MVPIBP, Nrep, covariate, Y){
   nf = nrow(covariate)
   X = as.matrix(covariate)
   p = ncol(Y)
   beta_est = fit_MVPIBP$coefficients[,1:p]
   q = nrow(beta_est)
   pstar_out = matrix(0, Nrep, nf)
-  set.seed(seed)
   for(n in 1:Nrep){
     beta_sample = matrix(NA, q, NCOL(beta_est))
     for(j in 1:NCOL(beta_est)){
@@ -252,8 +251,7 @@ pred_pstarMVP = function(fit_MVPIBP, Nrep, seed, covariate, Y){
 }
 
 
-pred_pstarIBP = function(IBP_fit, Nrep, seed, burnin, MCMC, data){
-  set.seed(seed)
+pred_pstarIBP = function(IBP_fit, Nrep, burnin, MCMC, data){
   p = ncol(data)
   pi_hat = apply(IBP_fit[[1]][,burnin:MCMC],1,mean)[1:p]
   pstar_IBP = matrix(0, Nrep, nrow(data))
