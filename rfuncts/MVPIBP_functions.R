@@ -122,9 +122,8 @@ synthetic_data = function(n, p, alpha, my_seed, type, k_factor = 10){
               "type" = type))
 }
 
-simulation_data = function(alpha, n, p, type, my_seed){
+simulation_data = function(alpha, n, p, type){
   Ndata = length(alpha)*length(type)
-  set.seed(my_seed)
   seeds_D = sample.int(5000, Ndata)
   dataALLsynth = vector("list", Ndata)
   for(i in 1:length(type)){
