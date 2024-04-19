@@ -109,6 +109,7 @@ Y_train2IBP = cbind(fungi2[-sampled_rows2, ])
 MCMC_IBP = 2000
 burnin_IBP = 1000
 param_IBP = list(truncP = truncP, a_alpha = a_alpha, b_alpha = b_alpha)
+mseed = 454
 IBP1 = Beta_Binom_IBP(Y_train1IBP, param_IBP, MCMC_IBP, mseed)
 IBP2 = Beta_Binom_IBP(Y_train2IBP, param_IBP, MCMC_IBP, mseed)
 
