@@ -71,7 +71,6 @@ burnin = 50
 truncP = 200
 Y1b = cbind(Y_train1, matrix(0, nrow(Y_train1), truncP))
 Y2b= cbind(Y_train2, matrix(0, nrow(Y_train2), truncP))
-set.seed(434)
 bigMVPfit1 = bigMVPh(Y1b, X_train1[,-1], eta01, nu0, gamma01, Lambda01, 
                      eta0_rho, nu0_rho, gamma0_rho, lambda0_sq_rho, max_it, 
                      epsilon, m, nmcmc, burnin)
@@ -81,9 +80,8 @@ bigMVPfit2 = bigMVPh(Y2b, X_train2[,-1], eta02, nu0, gamma02, Lambda02,
 
 
 #------# predictions for p*_n #-------#
-mseed = 354
-pstar1_bM = pred_pstarMVP(bigMVPfit1, Nrep, mseed, cov1, fungi1)[,(nf1-Nobs_test1):nf1]
-pstar2_bM = pred_pstarMVP(bigMVPfit2, Nrep, mseed, cov2, fungi2)[,(nf2-Nobs_test2):nf2]
+pstar1_bM = pred_pstarMVP(bigMVPfit1, Nrep, cov1, fungi1)[,(nf1-Nobs_test1):nf1]
+pstar2_bM = pred_pstarMVP(bigMVPfit2, Nrep, cov2, fungi2)[,(nf2-Nobs_test2):nf2]
 
 
 ###-----------------### fit hierarchical MVP-IBP model ####------------------###
@@ -100,8 +98,8 @@ mvpIBPfit2 = MVP_IBPh(Y_train2, X_train2, eta0_rho, nu0_rho, gamma0_rho, lambda0
                       eps_MH, truncP)  
 
 #------# predictions for p*_n #-------#
-pstar1_MVPIBP = pred_pstarMVP(mvpIBPfit1, Nrep, mseed, cov1, fungi1)[,(nf1-Nobs_test1):nf1]
-pstar2_MVPIBP = pred_pstarMVP(mvpIBPfit2, Nrep, mseed, cov2, fungi2)[,(nf2-Nobs_test2):nf2]
+pstar1_MVPIBP = pred_pstarMVP(mvpIBPfit1, Nrep, cov1, fungi1)[,(nf1-Nobs_test1):nf1]
+pstar2_MVPIBP = pred_pstarMVP(mvpIBPfit2, Nrep, cov2, fungi2)[,(nf2-Nobs_test2):nf2]
 
 ###-------------------------###  IBP ####------------------------------####
 
