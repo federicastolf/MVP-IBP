@@ -113,9 +113,9 @@ IBP1 = Beta_Binom_IBP(Y_train1IBP, param_IBP, MCMC_IBP, mseed)
 IBP2 = Beta_Binom_IBP(Y_train2IBP, param_IBP, MCMC_IBP, mseed)
 
 #-------# predictions #-------#
-pstar1_IBP = pred_pstarIBP(IBP1, Nrep, mseed, burnin_IBP, MCMC_IBP,
+pstar1_IBP = pred_pstarIBP(IBP1, Nrep, burnin_IBP, MCMC_IBP,
                            fungi1)[,(nf1-Nobs_test1):nf1]
-pstar2_IBP = pred_pstarIBP(IBP2, Nrep, mseed, burnin_IBP, MCMC_IBP, 
+pstar2_IBP = pred_pstarIBP(IBP2, Nrep, burnin_IBP, MCMC_IBP, 
                            fungi2)[,(nf2-Nobs_test2):nf2]
 
 
