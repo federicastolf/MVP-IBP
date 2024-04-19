@@ -12,7 +12,6 @@ sourceCpp("rcppfuncts/bigMVP_nocov.cpp")
 #--------------------------# Simulate data #---------------------------#
 n = 80 # number of samples
 alpha_data =seq(2, 40, by = 2)
-my_seed = 4694
 p = 300
 type = c("factor", "ts", "common")
 all_data = simulation_data(alpha_data, n, p, type, my_seed)
@@ -24,7 +23,6 @@ all_data = simulation_data(alpha_data, n, p, type, my_seed)
 Niter = 2000
 burnin = 500
 
-set.seed(my_seed)
 seeds_g = sample.int(5000, length(all_data))
 
 MSEpi_fMVPIBP = MSEpi_IBP = rep(0, length(all_data))
