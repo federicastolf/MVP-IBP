@@ -80,6 +80,7 @@ figsp = ggplot(plot_spr, aes(x=as.factor(site), y=sp, colour = Week))+
   theme_light() + theme( axis.title=element_text(size=12),
                          axis.text.x = element_text(size=12),
                          axis.text.y = element_text(size=11))
+figsp 
 
 # ggsave(filename = "spSite.png", plot=figsp  ,  width = 8, height = 4)
 
