@@ -1,4 +1,4 @@
-# Supporting information for "Allowing growing dimensional binary outcomes via the multivariate probit Indian buffet process"
+# Supporting information for "Infinite joint species distribution models"
 
 Code and data to implement the analysis in [Infinite joint species distribution models.](https://arxiv.org/abs/2402.13384)
 The repository contains:
