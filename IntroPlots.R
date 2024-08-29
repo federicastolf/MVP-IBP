@@ -32,24 +32,24 @@ for(i in 1:length(Demp)){
 
 mean(rowSums(fungi))
 alpha = 70
-common_PIBP = alpha*exp(-1/2-qnorm(Demp)) # common species for MVP-IBP
+common_TRACE = alpha*exp(-1/2-qnorm(Demp)) # common species for MVP-IBP
 common_IBP = -alpha*log(Demp) # common species for IBP
 
-dataC = cbind.data.frame(Demp, common_emp, common_PIBP, common_IBP)
+dataC = cbind.data.frame(Demp, common_emp, common_TRACE, common_IBP)
 dataC_long <- dataC %>% gather(key = "type", value = "value", -Demp)
 dataC_long$type = as.factor(dataC_long$type)
 
 fcn = ggplot(dataC_long, aes(x = Demp, y = value)) + 
   geom_line(aes(color = type, linetype=type), size=1.8) +
   scale_linetype_manual(values = c("longdash", "solid", "solid"),
-                        labels = c("empirical","IBP", "MVP-IBP")) +
+                        labels = c("empirical","IBP", "TRACE")) +
   scale_color_manual(values=c("steelblue", "black", "darkred"),
-                     labels = c("empirical","IBP", "MVP-IBP")) +
+                     labels = c("empirical","IBP", "TRACE")) +
   
-  ylab("Common features") +
+  ylab("Common species") +
   xlab(TeX("$\\epsilon$")) +
   theme_light() +
-  theme(legend.position = "top", axis.title.y = element_text(size=21),
+  theme(legend.position = "none", axis.title.y = element_text(size=21),
         axis.title.x = element_text(size=24), legend.text = element_text(size=20),
         axis.text.x = element_text(size=18), axis.text.y = element_text(size=18),
         legend.title=element_blank(),  legend.box.spacing = unit(0.2,"line"),

@@ -4,10 +4,12 @@ library(RcppArmadillo)
 library(tidyverse)
 require(phyloseq)
 library(psadd)
+library(dplyr)
+library(latex2exp) 
 
 rm(list=ls()) 
-Rcpp::sourceCpp("rcppfuncts/MVPIBPh.cpp")
-source("rfuncts/MVPIBP_functions.R")
+Rcpp::sourceCpp("TRACEh.cpp")
+source("plot_functions.R")
 
 #-------# load data #----#
 load("data/fungi_binary.Rdata")
@@ -17,7 +19,7 @@ load("Data/tree_fungi.Rdata")
 
 #----------------# set parameters #-----------------#
 max_it = 100
-epsilon = 0.00001
+epsilon = 0.0001
 m = 15
 nmcmc = 200
 burnin = 50
@@ -31,13 +33,15 @@ gamma0_rho = 0.01 # a_omega
 lambda0_sq_rho = 0.01 # b_omega
 truncP = 200
 
-#---------# fit hierarchical  MVP-IBP for fungi data #--------#
-fit_MVPIBP = MVP_IBPh(fungi, X_fungi,eta0_rho, nu0_rho, gamma0_rho, lambda0_sq_rho, 
+#------------------------# fit TRACE for fungi data #--------------------------#
+fit_TRACE = TRACEh(fungi, X_fungi,eta0_rho, nu0_rho, gamma0_rho, lambda0_sq_rho, 
                       a_alpha, b_alpha,prior_var,max_it, epsilon, m, nmcmc, burnin, 
                       eps_MH, truncP) 
 
 
-#####------------------------#### Krona plots #####------------------------####
+#####------------------------#### Plots #####------------------------####
+
+#--------# Krona wheels plots #-----#
 
 n = nrow(X_fungi)
 # constuct a dataframe with site as factor
@@ -55,10 +59,27 @@ covariate_fungi$site = as.factor(covariate_fungi$site)
 tax_matAB = tree_fungi %>% filter(Phylum %in% c("Ascomycota","Basidiomycota"))
 tax_matAB = as.matrix(tax_matAB)
 
-phylo_fungiAB = build_phylo(covariate_fungi, fit_MVPIBP, tax_matAB, X_fungi)
+phylo_fungiAB = build_phylo(covariate_fungi, fit_TRACE, tax_matAB, X_fungi)
 
 # interactive krona plots
 # type "no_cov" instead of "site" for the taxonomic composition in all samples
 plot_krona(phylo_fungiAB, "fungiAB", "site", trim=T)
 
+#--------# sample-specific species richness #-----#
+
+sprich = sprichnness_site(fit_TRACE, X_fungi)
+plot_spr = cbind.data.frame(covariate_fungi$site, X_fungi[,5], sprich)
+colnames(plot_spr) = c("site", "Week","sp")
+plotsr = plot_spr %>% distinct()
+
+
+figsp = ggplot(plot_spr, aes(x=as.factor(site), y=sp, colour = Week))+ 
+  geom_point(size=5.5) +
+  scale_color_gradient(low="yellow", high="darkred") +
+  xlab("Site") + ylab(TeX("$n_i$")) +
+  theme_light() + theme( axis.title=element_text(size=12),
+                         axis.text.x = element_text(size=12),
+                         axis.text.y = element_text(size=11))
+
+# ggsave(filename = "spSite.png", plot=figsp  ,  width = 8, height = 4)
 
