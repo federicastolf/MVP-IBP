@@ -32,7 +32,7 @@ for(i in 1:length(Demp)){
 
 mean(rowSums(fungi))
 alpha = 70
-common_TRACE = alpha*exp(-1/2-qnorm(Demp)) # common species for MVP-IBP
+common_TRACE = alpha*exp(-1/2-qnorm(Demp)) # common species for TRACE
 common_IBP = -alpha*log(Demp) # common species for IBP
 
 dataC = cbind.data.frame(Demp, common_emp, common_TRACE, common_IBP)

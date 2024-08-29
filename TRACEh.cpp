@@ -381,7 +381,7 @@ List TRACEh(arma::mat Y, arma::mat X, double eta0_rho, double nu0_rho, double ga
   result["post_var"] = second_stage[1];
   double runtime = timer.toc();
   result["runtime"] = runtime;
-   result["Y"] = data;
+  result["Y"] = data;
   return result;
 }
 
